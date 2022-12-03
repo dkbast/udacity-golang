@@ -124,36 +124,15 @@ func deleteCustomer(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// An HTML index page for the API which lists all available endpoints and their usage
-func index(w http.ResponseWriter, r *http.Request) {
-	// Set the content type to HTML
-	w.Header().Set("Content-Type", "text/html")
-	// Write the HTML to the response
-	fmt.Fprintf(w, "<h1>Customer API</h1>")
-	fmt.Fprintf(w, "<h2>Endpoints</h2>")
-	fmt.Fprintf(w, "<h3>GET /customers</h3>")
-	fmt.Fprintf(w, "<p>Returns all customers</p>")
-	fmt.Fprintf(w, "<h3>GET /customers/{id}</h3>")
-	fmt.Fprintf(w, "<p>Returns a single customer</p>")
-	fmt.Fprintf(w, "<h3>POST /customers</h3>")
-	fmt.Fprintf(w, "<p>Adds a new customer</p>")
-	fmt.Fprintf(w, "<h3>PUT /customers/{id}</h3>")
-	fmt.Fprintf(w, "<p>Updates an existing customer</p>")
-	fmt.Fprintf(w, "<h3>DELETE /customers/{id}</h3>")
-	fmt.Fprintf(w, "<p>Deletes a customer</p>")
-
-}
-
 func main() {
 	fmt.Println("Hello Udacity!")
-
 	router := mux.NewRouter()
-	router.HandleFunc("/", index)
 	router.HandleFunc("/customers", getCustomers).Methods("GET")
 	router.HandleFunc("/customers/{id}", getCustomer).Methods("GET")
 	router.HandleFunc("/customers", addCustomer).Methods("POST")
 	router.HandleFunc("/customers/{id}", updateCustomer).Methods("PUT")
 	router.HandleFunc("/customers/{id}", deleteCustomer).Methods("DELETE")
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 	fmt.Println("Server is running on port 8000")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
